@@ -1,17 +1,12 @@
-import { useState } from 'react'
-import TodoList from './TodoList'
-import './App.css'
-import LudoButton from './LudoBorard'
-import Likes from './Likes'
+import TodoList from "./TodoList";
+import "./App.css";
 
 function App() {
- 
   return (
-    //<Likes/>
-    //<LudoButton/>
-   <TodoList/>
-
-  )
+    <div>
+      <TodoList />
+    </div>
+  );
 }
 
-export default App
+export default App;
