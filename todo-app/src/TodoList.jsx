@@ -1,80 +1,87 @@
-import { useState } from "react"
+import { useState } from "react";
+import "./TodoList.css"; 
 
-export default function TodoList(){
+export default function TodoList() {
+    // Added isDone: false to the initial state
+    let [todos, setTodos] = useState([{ task: "sample-task", id: crypto.randomUUID(), isDone: false }]);
+    let [newTodo, setNewTodo] = useState("");
 
-    let[todos,setTodos]=useState([{task:"sample-task",id:crypto.randomUUID()}]);
-    let[newTodo,setNewTodo]=useState("");
-
-    
-
-    let addNewTask=()=>{
-        setTodos((prevTodos)=>{
-           return [...prevTodos,{task:newTodo, id:crypto.randomUUID()}]}
-        );
+    let addNewTask = () => {
+        if (!newTodo.trim()) return; // Prevents adding empty tasks
+        
+        setTodos((prevTodos) => {
+            return [...prevTodos, { task: newTodo, id: crypto.randomUUID(), isDone: false }];
+        });
         setNewTodo("");
+    };
 
-    } 
-
-
-
-    let updateTodoValue =(event)=>{
+    let updateTodoValue = (event) => {
         setNewTodo(event.target.value);
     };
 
-    let deleteTodo = (id)=>{
-     setTodos((prevTodos)=>todos.filter((prevTodo)=>prevTodo.id!=id));
+    let deleteTodo = (id) => {
+        // Fixed: Used prevTodos instead of todos to ensure state updates reliably
+        setTodos((prevTodos) => prevTodos.filter((prevTodo) => prevTodo.id !== id));
     };
 
-    let markAllDone=()=>{
-        setTodos((prevTodos)=>
-            prevTodos.map((todo)=>
-                ({...todo, isDone:true})
-            )
+    let markAllDone = () => {
+        setTodos((prevTodos) =>
+            prevTodos.map((todo) => ({ ...todo, isDone: true }))
         );
-    }
+    };
 
-    let markAsDone=(id)=>{
-        setTodos((prevTodos)=>
-            prevTodos.map((todo)=>{
-               if(todo.id==id) {
-                return {...todo, isDone:true};
-               }
-               else return todo;
+    let markAsDone = (id) => {
+        setTodos((prevTodos) =>
+            prevTodos.map((todo) => {
+                if (todo.id === id) {
+                    return { ...todo, isDone: true };
+                } else return todo;
             })
         );
-    }
-    
+    };
+
     return (
-        <div>
-         
-            <h1>Todo List</h1>
+        <div className="todo-container">
+            <h1 className="todo-title">Task Master</h1>
 
-               <input placeholder="Add a task" 
-               value={newTodo}
-               onChange={updateTodoValue}
-               ></input>
-               <br/>
-               <button onClick={addNewTask}>Add Task</button>
-               <br/> <br/> <br/> <br/> <br/>
+            <div className="input-group">
+                <input
+                    className="todo-input"
+                    placeholder="What needs to be done?"
+                    value={newTodo}
+                    onChange={updateTodoValue}
+                    onKeyDown={(e) => e.key === 'Enter' && addNewTask()} // Added Enter key support
+                />
+                <button className="btn btn-primary" onClick={addNewTask}>Add</button>
+            </div>
 
-                <hr />
-               <h2>TASK TODO LIST</h2>
-               <ul>
-                {
-                   todos.map ((todo)=>(
-                    <li key={todo.id}>
-                        <span style={ todo.isDone ? {textDecoration:'line-through'} : {}}>
+            <div className="list-header">
+                <h2>Your Tasks</h2>
+                {todos.length > 0 && (
+                    <button className="btn btn-text" onClick={markAllDone}>Mark All Done</button>
+                )}
+            </div>
+
+            <ul className="todo-list">
+                {todos.map((todo) => (
+                    <li key={todo.id} className={`todo-item ${todo.isDone ? 'completed' : ''}`}>
+                        <span className="task-text">
                             {todo.task}
                         </span>
-                        &nbsp;&nbsp;&nbsp;
-                    <button onClick={()=>deleteTodo(todo.id)}>DELETE</button>
-                    <button onClick={()=>markAsDone(todo.id)}>MARK AS DONE</button>
-                    </li>) ) 
-                }
-               </ul>
-
-
+                        
+                        <div className="action-buttons">
+                            {!todo.isDone && (
+                                <button className="btn btn-success" onClick={() => markAsDone(todo.id)}>
+                                    ✓ Done
+                                </button>
+                            )}
+                            <button className="btn btn-danger" onClick={() => deleteTodo(todo.id)}>
+                                ✕ Delete
+                            </button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
         </div>
-
-    )
+    );
 }
