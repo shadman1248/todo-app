@@ -1,4 +1,4 @@
-# TodoList 📝
+# Todo App 📝
 
 A clean, modern, and fully responsive To-Do application built with React. This project demonstrates core React concepts including state management, component structure, and dynamic UI rendering.
 
